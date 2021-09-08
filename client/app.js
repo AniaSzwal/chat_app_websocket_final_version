@@ -1,3 +1,11 @@
+//rozkaz dla JS-a: zainicjuj nowego klienta socketowego i zachowaj referencje do niego pod stałą socket
+const socket = io({
+    autoConnect: false //W takiej sytuacji to my sami decydujemy, kiedy kanał komunikacyjny z serwerem zostanie otwarty. Możemy inicjować go za pomocą komendy open (np. socket.open()).
+});
+socket.on('message', addMessage)
+socket.on('message', (event) => addMessage(event.author, event.content))
+
+
 const loginForm = document.querySelector('#welcome-form');
 const messagesSection =document.querySelector('#messages-section');
 const messagesList = messagesSection.querySelector('#messages-list');
@@ -17,10 +25,12 @@ const login = (event) => {
 //Gdy wszystko w porządku, nasz kod powinien przypisać wartość tego pola do zmiennej userName
     } else {
         userName = userNameInput.value;
+        let id = socket.id;
 //schować formularz logowania
         loginForm.classList.remove('show');
 //pokazać sekcję wiadomości
         messagesSection.classList.add('show');
+        socket.emit('join', { user: userName, id: id });
     }
 }
 
@@ -39,14 +49,18 @@ function addMessage(author, content) {
     messagesList.appendChild(message);
 }
 
-const sendMessage = (event) => {
-    event.preventDefault();
-    if (messageContentInput.value === '') {
+const sendMessage = (e) => {
+    e.preventDefault();
+
+    let messageContent = messageContentInput.value;
+    if (!messageContent) {
     alert('Please type Your message');
 
 //Gdy wszystko jest w porządku, wywołaj funkcję addMessage, a jako argument przekaż jej wartość userName, oraz wpisaną treść #messageContentInput
     }else {
-        addMessage(userName, messageContentInput.value)
+        addMessage(userName, messageContent)
+        socket.emit('message', {author: userName, content: messageContent});
+        messageContentInput.value = '';
     }
 }
 addMessageForm.addEventListener('submit', sendMessage)
