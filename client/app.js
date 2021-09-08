@@ -4,6 +4,8 @@ const socket = io({
 });
 
 socket.on('message', (event) => addMessage(event.author, event.content))
+socket.on('join', (event) => addMessage('ChatBot', `${event.user} has joined the conversation!`));
+socket.on('removeUser', (event) => addMessage('ChatBot', `${event.user} has left the conversation... :(`));
 
 
 const loginForm = document.querySelector('#welcome-form');
@@ -40,8 +42,13 @@ loginForm.addEventListener('submit', login);
 //Co do funkcji addMessage, na razie ma przyjmować informację o autorze wiadomości oraz jej treści i generować odpowiedni kod HTML, czyli po prostu dodać nowy element li do naszej listy z wiadomościami. Musi przy tym zachować odpowiedni format (nagłówek to autor, treść ma być w divie o klasie .message itd.).
 function addMessage(author, content) {
     const message = document.createElement('li');
-    message.classList.add('message');
-    author === userName ? message.classList.add('message--self') : message.classList.add('message--recieved');
+    if(author === 'ChatBot'){
+        message.setAttribute('class', 'message message--chatBot')
+    } else if (author === userName){
+        message.setAttribute('class', 'message message--self')
+    } else {
+        message.setAttribute('class', 'message message--recieved')
+    };
     message.innerHTML =
         `<h3 class="message__author">${userName === author ? 'You' : author }</h3>
         <div class="message__content">

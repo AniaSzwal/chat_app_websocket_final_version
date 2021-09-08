@@ -36,11 +36,19 @@ io.on('connection', (socket) => {
     socket.on('join', (user) => {
         users.push(user);
         console.log(user.user);
+        console.log('Oh, I\'ve added new socket ' + socket.id + ' to my list of users')
         socket.broadcast.emit('join', user);
     });
 
     socket.on('disconnect', () => {
+        users.forEach(user => {
+            if(user.id === socket.id){
+                const index = users.indexOf(user);
+                socket.broadcast.emit('removeUser', user);
+                users.splice(index, 1);
+            }
+        });
         console.log('Oh, socket ' + socket.id + ' has left')
     });
-    console.log('I\'ve added a listener on message event \n');
+    console.log('I\'ve added a listener on message and disconnect events \n');
 });
