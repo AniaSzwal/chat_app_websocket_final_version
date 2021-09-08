@@ -4,8 +4,8 @@ const socket = io({
 });
 
 socket.on('message', (event) => addMessage(event.author, event.content))
-socket.on('join', (event) => addMessage('ChatBot', `${event.user} has joined the conversation!`));
-socket.on('removeUser', (event) => addMessage('ChatBot', `${event.user} has left the conversation... :(`));
+socket.on('join', (event) => addMessage('ChatBot', `${event.name} has joined the conversation!`));
+socket.on('removeUser', (event) => addMessage('ChatBot', `${event.name} has left the conversation... :(`));
 
 
 const loginForm = document.querySelector('#welcome-form');
@@ -28,12 +28,11 @@ const login = (event) => {
     } else {
         userName = userNameInput.value;
         socket.open();
-        let id = socket.id;
 //schować formularz logowania
         loginForm.classList.remove('show');
 //pokazać sekcję wiadomości
         messagesSection.classList.add('show');
-        socket.emit('join', { user: userName, id: id });
+        socket.emit('join', userName);
     }
 }
 
@@ -59,7 +58,6 @@ function addMessage(author, content) {
 
 const sendMessage = (e) => {
     e.preventDefault();
-
     let messageContent = messageContentInput.value;
     if (!messageContent) {
     alert('Please type Your message');

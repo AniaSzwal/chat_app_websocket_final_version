@@ -33,9 +33,11 @@ io.on('connection', (socket) => {
         messages.push(message);
         socket.broadcast.emit('message', message); });
 
-    socket.on('join', (user) => {
+    socket.on('join', (userName) => {
+        let id = socket.id;
+        const user = { name: userName, id: id };
         users.push(user);
-        console.log(user.user);
+        console.log(userName);
         console.log('Oh, I\'ve added new socket ' + socket.id + ' to my list of users')
         socket.broadcast.emit('join', user);
     });
