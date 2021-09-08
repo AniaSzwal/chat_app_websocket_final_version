@@ -2,7 +2,7 @@
 const socket = io({
     autoConnect: false //W takiej sytuacji to my sami decydujemy, kiedy kanał komunikacyjny z serwerem zostanie otwarty. Możemy inicjować go za pomocą komendy open (np. socket.open()).
 });
-socket.on('message', addMessage)
+
 socket.on('message', (event) => addMessage(event.author, event.content))
 
 
@@ -20,11 +20,12 @@ const login = (event) => {
     event.preventDefault();
 //Dodaj walidację wartości userNameInput. (dodaj za userNameInput końcówkę .value - bo walidacja 'wartości').
 // Ma sprawdzać, czy pole nie jest puste. Jeśli tak, należy zwrócić komunikat o błędzie (wystarczy zwykły alert)
-    if (userNameInput.value === userName) {
+    if (!userNameInput.value) {
         alert('Please enter Your login')
 //Gdy wszystko w porządku, nasz kod powinien przypisać wartość tego pola do zmiennej userName
     } else {
         userName = userNameInput.value;
+        socket.open();
         let id = socket.id;
 //schować formularz logowania
         loginForm.classList.remove('show');
