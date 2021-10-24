@@ -20,8 +20,10 @@ app.get('*', (req, res) => { //*-gwiazdka oznacza 'wszystko'
     res.status(404).render('404.html', {layout: false});
 }) */
 
-const server = app.listen(8000, () => {
-    console.log('Server is running on port: 8000');
+const port = process.env.PORT || 8888;
+
+const server = app.listen(port, () => {
+    console.log('Server is running on port: ${port}');
 });
 
 const io = socket(server);
@@ -54,3 +56,4 @@ io.on('connection', (socket) => {
     });
     console.log('I\'ve added a listener on message and disconnect events \n');
 });
+

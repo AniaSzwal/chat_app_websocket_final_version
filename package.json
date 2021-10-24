@@ -6,7 +6,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "nodemon server.js "
+    "start": "nodemon server.js ",
+    "web": "server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
